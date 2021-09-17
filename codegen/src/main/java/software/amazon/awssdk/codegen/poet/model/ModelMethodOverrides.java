@@ -106,6 +106,10 @@ public class ModelMethodOverrides {
     }
 
     public MethodSpec toStringMethod(ShapeModel shapeModel) {
+        if (shapeModel == null) {
+            throw new IllegalArgumentException("shapeModel cannot be null");
+        }
+
         String javadoc = "Returns a string representation of this object. This is useful for testing and " +
                          "debugging. Sensitive data will be redacted from this string using a placeholder " +
                          "value. ";
