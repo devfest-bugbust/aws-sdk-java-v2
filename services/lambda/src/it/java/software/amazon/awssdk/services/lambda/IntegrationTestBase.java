@@ -91,24 +91,45 @@ public class IntegrationTestBase extends AwsTestBase {
     }
 
     private static File setupFunctionZip(String jsFile) throws IOException {
-        InputStream in = IntegrationTestBase.class.getResourceAsStream(jsFile);
+        try {
 
-        File zipFile = File.createTempFile("lambda-cloud-function", ".zip");
-        ZipOutputStream out = new ZipOutputStream(new FileOutputStream(zipFile));
+            InputStream in = IntegrationTestBase.class.getResourceAsStream(jsFile);
 
-        out.putNextEntry(new ZipEntry(jsFile));
+            File zipFile = File.createTempFile("lambda-cloud-function", ".zip");
+            ZipOutputStream out = new ZipOutputStream(new FileOutputStream(zipFile));
 
-        byte[] b = new byte[1024];
-        int count;
+            out.putNextEntry(new ZipEntry(jsFile));
 
-        while ((count = in.read(b)) != -1) {
-            out.write(b, 0, count);
+            byte[] b = new byte[1024];
+            int count;
+
+            while ((count = in.read(b)) != -1) {
+                out.write(b, 0, count);
+            }
+
+            out.close();
+            in.close();
+            return zipFile;
         }
-
-        out.close();
-        in.close();
-
-        return zipFile;
+        catch(IOException e) {
+            throw new UncheckedIOException(e);
+        }
+        finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (out != null) {
+                try {
+                    out.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     private static void createLambdaServiceRole() {
