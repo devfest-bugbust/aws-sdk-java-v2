@@ -132,9 +132,11 @@ public class S3CrtDataPublisher implements SdkPublisher<ByteBuffer> {
             Event firstEvent = buffer.peek();
             if (firstEvent != null && isTerminalEvent(firstEvent)) {
                 Event terminalEvent = buffer.poll();
-                handleTerminalEvent(terminalEvent);
-                isDelivering.set(false);
-                return;
+                if (terminalEvent != null) {
+                    handleTerminalEvent(terminalEvent);
+                    isDelivering.set(false);
+                    return;
+                }
             }
 
             while (!buffer.isEmpty() && outstandingDemand.get() > 0) {
