@@ -701,7 +701,7 @@ public interface MappedRepository<T, ID> extends DocumentRepository {
      *     }
      * </code>
      */
-    PutObjectResponse<T> putObject(T entity, PutRequest options)
+    PutObjectResponse<T> putObject(T entity, PutRequest options);
 
     /**
      * Retrieve an object from the repository. The index will be chosen automatically based on the fields provided in the
