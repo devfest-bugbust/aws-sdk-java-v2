@@ -90,10 +90,18 @@ public class IntegrationTestBase extends AwsTestBase {
         }
     }
 
-    private static File setupFunctionZip(String jsFile) throws IOException {
-        try {
+    public static void closeSafely(Object obj) throws IOException {
+        if (obj != null) {
+                try {
+                    obj.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+    }
 
-            InputStream in = IntegrationTestBase.class.getResourceAsStream(jsFile);
+    private static File setupFunctionZip(String jsFile) throws IOException {
+        try (InputStream in = IntegrationTestBase.class.getResourceAsStream(jsFile)) {
 
             File zipFile = File.createTempFile("lambda-cloud-function", ".zip");
             ZipOutputStream out = new ZipOutputStream(new FileOutputStream(zipFile));
@@ -115,20 +123,8 @@ public class IntegrationTestBase extends AwsTestBase {
             throw new UncheckedIOException(e);
         }
         finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (out != null) {
-                try {
-                    out.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+            closeSafely(in);
+            closeSafely(out);
         }
     }
 
