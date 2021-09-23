@@ -149,7 +149,7 @@ public final class IdleConnectionReaper {
                 try {
                     Thread.sleep(sleepPeriod);
 
-                    for (Map.Entry<HttpClientConnectionManager, Long> entry : connectionManagers.entrySet()) {
+                    for (Map.Entry<HttpClientConnectionManager, Long> entry : this.connectionManagers.entrySet()) {
                         try {
                             entry.getKey().closeIdleConnections(entry.getValue(), TimeUnit.MILLISECONDS);
                         } catch (Exception t) {
