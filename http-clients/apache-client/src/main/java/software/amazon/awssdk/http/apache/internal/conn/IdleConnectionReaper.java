@@ -148,15 +148,12 @@ public final class IdleConnectionReaper {
             while (!stopping) {
                 try {
                     Thread.sleep(sleepPeriod);
-                    synchronized (this) {
-                        if (!connectionManagers.isEmpty()) {
-                            for (Map.Entry<HttpClientConnectionManager, Long> entry : connectionManagers.entrySet()) {
-                                try {
-                                    entry.getKey().closeIdleConnections(entry.getValue(), TimeUnit.MILLISECONDS);
-                                } catch (Exception t) {
-                                    log.warn("Unable to close idle connections", t);
-                                }
-                            }
+
+                    for (Map.Entry<HttpClientConnectionManager, Long> entry : this.connectionManagers.entrySet()) {
+                        try {
+                            entry.getKey().closeIdleConnections(entry.getValue(), TimeUnit.MILLISECONDS);
+                        } catch (Exception t) {
+                            log.warn("Unable to close idle connections", t);
                         }
                     }
                 } catch (Throwable t) {
